@@ -8,6 +8,6 @@ using namespace std;
 int main(){
 	std::ios_base::sync_with_stdio(false);
 	//std::cin.tie(nullptr);
-	
+	cout<<"elo"<<endl;
 	return 0;
 }
