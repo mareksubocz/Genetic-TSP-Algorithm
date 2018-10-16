@@ -30,10 +30,12 @@ void wczytaj( vector<vector<double>> & e){
 	}
 }
 
+//wkladamy od 1, ale od indeksu 0
 double wynik(vector<vector<double>> & e, vector<int> & sequence){
 	double w = 0;
 	for (int i = 0; i < sequence.size()-1; ++i)
-		w += e[sequence[i]][sequence[i+1]];
-	w += e[sequence[sequence.size()-1]][sequence[0]];
+		w += e[sequence[i]-1][sequence[i+1]-1];
+	w += e[sequence[sequence.size()-1]-1][sequence[0]-1];
 	return w;
 }
+
