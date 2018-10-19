@@ -1,8 +1,5 @@
-#define FOR(i,a,b) for(int i=a; i<b; ++i)
-#define ROF(i,a,b) for(int i=a; i>b; --i)
-#define REP(i,n) FOR(i,0,n)
-#define INF 2147483647
 #include<bits/stdc++.h>
+
 using namespace std;
 
 struct point{
@@ -10,28 +7,44 @@ struct point{
 	double y;
 };
 
-void wczytaj( vector<vector<double>> & e){
+void readInputFile(string path, vector<vector<double>> & e){
+	fstream in;
+	in.open(path);
 	string no;
-	for (int i = 0; i < 6; ++i)
-		getline(cin, no);
-	cin>>no;
+	int numberOfInstances;
+	for (int i = 0; i < 6; ++i) getline(in, no);
+	in>>no;
 	double a, b;
 	vector<point> p;
 	while(no != "EOF"){
-		cin>>a>>b;
+		in>>a>>b;
 		p.push_back(point{a,b});
-		cin>>no;
+		in>>no;
 	}
-	for (int i = 0; i < p.size(); ++i){
-		e.push_back(vector<double> (0));
-		for (int j = 0; j < p.size(); ++j){
-			e[i].push_back(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
-		}
+	e.resize(p.size(),vector<double>(p.size(), 0));
+	for (int i = 1; i < p.size(); ++i)
+		for (int j = i; j < p.size(); ++j)
+			e[i][j]=e[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
+	in.close();
+}
+
+vector<int> readSolutionFile(string path){
+	fstream in; in.open(path);
+	int a;
+	string line;
+	vector<int> v;
+	for(int i = 0; i<4; i++) getline(in, line);
+	in>>a;
+	while (a != -1){
+		v.push_back(a);
+		in>>a;
 	}
+	in.close();
+	return v;
 }
 
 //wkladamy od 1, ale od indeksu 0
-double wynik(vector<vector<double>> & e, vector<int> & sequence){
+double result(vector<vector<double>> & e, vector<int> & sequence){
 	double w = 0;
 	for (int i = 0; i < sequence.size()-1; ++i)
 		w += e[sequence[i]-1][sequence[i+1]-1];

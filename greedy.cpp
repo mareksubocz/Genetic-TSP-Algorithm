@@ -7,12 +7,12 @@
 using namespace std;
 
 vector<vector<double>> e;
+vector<bool> vis;
 
-int main(){
+int main(int argc, char * argv[]){
 	std::ios_base::sync_with_stdio(false);
-	//std::cin.tie(nullßtr);
-	wczytaj(e);
-	bool vis[MAX] = {false};
+	readInputFile(argv[1], e);
+	vis.resize(e.size(), 0);
 	vector<int> sequence;
 	vector<int> v;
 	double mini;
@@ -32,6 +32,8 @@ int main(){
 			a = b;
 			mini = INF;
 	}
-	cout<<"wynik: "<<wynik(e, sequence)<<endl;
+	cout<<"wynik: "<<result(e, sequence)<<endl;
+	vector<int> optimalSequence = readSolutionFile(argv[2]);
+	cout<<"optim: "<<result(e, optimalSequence);
 	return 0;
 }
