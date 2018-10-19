@@ -4,6 +4,7 @@
 #define INF 2147483647
 #define MAX 1000
 #include"useful.cpp"
+// #include "tqdm/tqdm.h"
 using namespace std;
 
 vector<vector<double>> e;
@@ -11,6 +12,7 @@ vector<bool> vis;
 
 int main(int argc, char * argv[]){
 	std::ios_base::sync_with_stdio(false);
+	cout<<argv[1]<<":"<<endl;
 	readInputFile(argv[1], e);
 	vis.resize(e.size(), 0);
 	vector<int> sequence;
@@ -33,7 +35,11 @@ int main(int argc, char * argv[]){
 			mini = INF;
 	}
 	cout<<"wynik: "<<result(e, sequence)<<endl;
-	vector<int> optimalSequence = readSolutionFile(argv[2]);
-	cout<<"optim: "<<result(e, optimalSequence);
+	if(argc > 2){
+		vector<int> optimalSequence = readSolutionFile(argv[2]);
+		cout<<"optim: "<<result(e, optimalSequence);
+	}
+	else
+		cout<<"no optimal solution file found"<<endl;
 	return 0;
 }

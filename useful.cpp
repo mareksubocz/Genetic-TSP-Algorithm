@@ -12,7 +12,7 @@ void readInputFile(string path, vector<vector<double>> & e){
 	in.open(path);
 	string no;
 	int numberOfInstances;
-	for (int i = 0; i < 6; ++i) getline(in, no);
+	while(no != "NODE_COORD_SECTION") getline(in, no);
 	in>>no;
 	double a, b;
 	vector<point> p;
@@ -33,7 +33,7 @@ vector<int> readSolutionFile(string path){
 	int a;
 	string line;
 	vector<int> v;
-	for(int i = 0; i<4; i++) getline(in, line);
+	while(line != "TOUR_SECTION") getline(in, line);
 	in>>a;
 	while (a != -1){
 		v.push_back(a);
