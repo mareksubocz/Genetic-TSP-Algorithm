@@ -12,7 +12,6 @@ vector<bool> vis;
 
 int main(int argc, char * argv[]){
 	std::ios_base::sync_with_stdio(false);
-	cout<<argv[1]<<":"<<endl;
 	readInputFile(argv[1], e);
 	vis.resize(e.size(), 0);
 	vector<int> sequence;
@@ -37,7 +36,9 @@ int main(int argc, char * argv[]){
 	cout<<"wynik: "<<result(e, sequence)<<endl;
 	if(argc > 2){
 		vector<int> optimalSequence = readSolutionFile(argv[2]);
-		cout<<"optim: "<<result(e, optimalSequence);
+		cout<<"optim: "<<result(e, optimalSequence)<<endl;
+		double cost = (result(e, sequence) / result(e, optimalSequence)) - 1;
+		cout<<"cost: "<<setprecision(4)<<cost*100<<"%"<<endl;
 	}
 	else
 		cout<<"no optimal solution file found"<<endl;
