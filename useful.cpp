@@ -2,6 +2,7 @@
 
 using namespace std;
 
+
 struct point{
 	double x;
 	double y;
@@ -14,28 +15,23 @@ void readInputFile(string path, vector<vector<double>> & e, vector<int> converte
 	int numberOfInstances;
 	double a, b;
 	vector<point> p;
-	while(!in.eof()){
-		in>>no;
-		converter.push_back(int(no));
-		in>>a>>b;
+	while(in>>no>>a>>b){
+		converter.push_back(no);
 		p.push_back(point{a,b});
 	}
 	e.resize(p.size(),vector<double>(p.size(), 0));
-	for (int i = 1; i < p.size(); ++i)
+	for (int i = 0; i < p.size(); ++i)
 		for (int j = i; j < p.size(); ++j)
 			e[i][j]=e[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
 	in.close();
 }
 
 vector<int> readSolutionFile(string path){
-	fstream in; in.open(path);
-	int a;
-	string line;
+	fstream in; 
 	vector<int> v;
-	while (!in.eof()){
-		in>>a;
-		v.push_back(a);
-	}
+	int a;
+	in.open(path);
+	while (in>>a) v.push_back(a);
 	in.close();
 	return v;
 }
