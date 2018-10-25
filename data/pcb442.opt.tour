@@ -1,8 +1,3 @@
-NAME : pcb442.opt.tour
-TYPE : TOUR
-COMMENT : Optimal solution for pcb442 (50778)
-DIMENSION : 442
-TOUR_SECTION
 1
 2
 3
@@ -445,5 +440,3 @@ TOUR_SECTION
 66
 34
 442
--1
-EOF

@@ -1,8 +1,3 @@
-NAME : st70.opt.tour
-COMMENT : Optimal tour for st70 (675) 
-TYPE : TOUR
-DIMENSION : 70
-TOUR_SECTION
 1
 36
 29
@@ -73,5 +68,3 @@ TOUR_SECTION
 47
 16
 23
--1
-EOF

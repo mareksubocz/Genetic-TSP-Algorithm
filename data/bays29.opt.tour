@@ -1,8 +1,3 @@
-NAME : bays29.opt.tour
-COMMENT : Optimum solution of bays29
-TYPE : TOUR
-DIMENSION : 29
-TOUR_SECTION
 1
 28
 6
@@ -32,5 +27,3 @@ TOUR_SECTION
 16
 13
 21
--1
-EOF

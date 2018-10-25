@@ -1,8 +1,3 @@
-NAME : gr96.opt.tour
-TYPE : TOUR
-COMMENT : Optimal tour for gr96 (55209)
-DIMENSION : 96
-TOUR_SECTION
 29
 2
 3
@@ -99,6 +94,3 @@ TOUR_SECTION
 31
 30
 1
--1
-EOF
-

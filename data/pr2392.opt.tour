@@ -1,8 +1,3 @@
-NAME : pr2392.opt.tour
-TYPE : TOUR
-COMMENT : Optimal solution for pr2392 (378032)
-DIMENSION : 2392
-TOUR_SECTION
 1
 2
 3
@@ -2395,5 +2390,3 @@ TOUR_SECTION
 2390
 2391
 2392
--1
-EOF

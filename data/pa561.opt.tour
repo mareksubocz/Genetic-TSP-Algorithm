@@ -1,8 +1,3 @@
-NAME : pa561.optbc.tour
-TYPE : TOUR
-COMMENT : Optimal tour for pa561 (2763)
-DIMENSION : 561
-TOUR_SECTION
 1
 153
 106
@@ -564,5 +559,3 @@ TOUR_SECTION
 325
 331
 324
--1
-EOF
