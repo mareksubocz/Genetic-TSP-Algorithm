@@ -7,19 +7,18 @@ struct point{
 	double y;
 };
 
-void readInputFile(string path, vector<vector<double>> & e){
+void readInputFile(string path, vector<vector<double>> & e, vector<int> converter){
 	fstream in;
 	in.open(path);
-	string no;
+	int no;
 	int numberOfInstances;
-	while(no != "NODE_COORD_SECTION") getline(in, no);
-	in>>no;
 	double a, b;
 	vector<point> p;
-	while(no != "EOF"){
+	while(!in.eof()){
+		in>>no;
+		converter.push_back(int(no));
 		in>>a>>b;
 		p.push_back(point{a,b});
-		in>>no;
 	}
 	e.resize(p.size(),vector<double>(p.size(), 0));
 	for (int i = 1; i < p.size(); ++i)
@@ -33,11 +32,9 @@ vector<int> readSolutionFile(string path){
 	int a;
 	string line;
 	vector<int> v;
-	while(line != "TOUR_SECTION") getline(in, line);
-	in>>a;
-	while (a != -1){
-		v.push_back(a);
+	while (!in.eof()){
 		in>>a;
+		v.push_back(a);
 	}
 	in.close();
 	return v;
