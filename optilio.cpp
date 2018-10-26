@@ -16,6 +16,19 @@ struct point{
 	double y;
 };
 
+// Czy odcinki p1p2 i p3p4 sie przecinaja?
+bool intersect(point p1, point p2){
+int x1=min(p1.x,p2.x), y1=min(p1.y,p2.y);
+int x2=max(p1.x,p2.x), y2=max(p1.y,p2.y);
+int x3=min(p3.x,p4.x), y3=min(p3.y,p4.y);
+int x4=max(p3.x,p4.x), y4=max(p3.y,p4.y);
+if (x2<x3 || x1>x4 || y2<y3 || y1>y4) return false;
+
+return
+ sgn(wekt(p1,p3,p2))*sgn(wekt(p1,p4,p2))<=0 &&
+ sgn(wekt(p3,p1,p4))*sgn(wekt(p3,p2,p4))<=0;
+}
+
 void readInput(){
 	int no;
 	int numberOfInstances;
