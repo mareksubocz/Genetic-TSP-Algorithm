@@ -1,7 +1,7 @@
 import glob
 import os
 from termcolor import colored
-os.system("g++-8 greedy.cpp")
+os.system("g++-7 greedy.cpp")
 
 for filepath in glob.iglob('data/*.tsp'):
     print(colored(filepath + ":", 'green'))

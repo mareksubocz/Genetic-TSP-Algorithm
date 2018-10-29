@@ -12,7 +12,6 @@ void readInputFile(string path, vector<vector<double>> & e, vector<int> converte
 	fstream in;
 	in.open(path);
 	int no;
-	int numberOfInstances;
 	double a, b;
 	vector<point> p;
 	while(in>>no>>a>>b){
