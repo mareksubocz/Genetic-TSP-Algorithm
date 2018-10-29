@@ -17,6 +17,7 @@ void readInputFile(string path, vector<vector<double>> & v){
 	while(in>>no>>a>>b)
 		p.push_back(point{a,b});
 	v.resize(p.size(),vector<double>(p.size(), 0));
+	// wyliczenie odległości:
 	for (int i = 0; i < p.size(); ++i)
 		for (int j = i; j < p.size(); ++j)
 			v[i][j]=v[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
@@ -24,10 +25,9 @@ void readInputFile(string path, vector<vector<double>> & v){
 }
 
 vector<int> readSolutionFile(string path){
-	fstream in; 
+	fstream in; in.open(path);
 	vector<int> v;
 	int a;
-	in.open(path);
 	while (in>>a) v.push_back(a);
 	in.close();
 	return v;
@@ -38,7 +38,7 @@ double result(vector<vector<double>> & v, vector<int> & seq){
 	double w = 0;
 	for (int i = 0; i < seq.size()-1; ++i)
 		w += v[seq[i]-1][seq[i+1]-1];
-	w += v[seq[seq.size()-1]-1][seq[0]-1];
+	w += v[seq[seq.size()-1]-1][seq[0]-1];	//dodajemy powrot do poczatku
 	return w;
 }
 
