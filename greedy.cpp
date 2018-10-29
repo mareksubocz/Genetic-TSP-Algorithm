@@ -1,25 +1,18 @@
-#define FOR(i,a,b) for(int i=a; i<b; ++i)
-#define ROF(i,a,b) for(int i=a; i>b; --i)
-#define REP(i,n) FOR(i,0,n)
 #define INF 2147483647
-#define MAX 1000
 #include"useful.cpp"
 // #include "tqdm/tqdm.h"
 using namespace std;
 
-vector<vector<double>> e;
-vector<bool> vis;
 
 int main(int argc, char * argv[]){
 	std::ios_base::sync_with_stdio(false);
-	vector<int> converter;
+	vector<vector<double>> e;
+	vector<bool> vis;
 	vector<int> sequence;
-	vector<int> v;
 	double mini;
 	int a, b;
-	readInputFile(argv[1], e, converter);
+	readInputFile(argv[1], e);
 	vis.resize(e.size(), 0);
-	//zaczynam algorytm
 	vis[0] = 1;
 	a = 0;
 	sequence.push_back(1);

@@ -8,21 +8,18 @@ struct point{
 	double y;
 };
 
-void readInputFile(string path, vector<vector<double>> & e, vector<int> converter){
+void readInputFile(string path, vector<vector<double>> & v){
 	fstream in;
 	in.open(path);
 	int no;
-	int numberOfInstances;
 	double a, b;
 	vector<point> p;
-	while(in>>no>>a>>b){
-		converter.push_back(no);
+	while(in>>no>>a>>b)
 		p.push_back(point{a,b});
-	}
-	e.resize(p.size(),vector<double>(p.size(), 0));
+	v.resize(p.size(),vector<double>(p.size(), 0));
 	for (int i = 0; i < p.size(); ++i)
 		for (int j = i; j < p.size(); ++j)
-			e[i][j]=e[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
+			v[i][j]=v[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
 	in.close();
 }
 
@@ -37,11 +34,11 @@ vector<int> readSolutionFile(string path){
 }
 
 //wkladamy od 1, ale od indeksu 0
-double result(vector<vector<double>> & e, vector<int> & sequence){
+double result(vector<vector<double>> & v, vector<int> & seq){
 	double w = 0;
-	for (int i = 0; i < sequence.size()-1; ++i)
-		w += e[sequence[i]-1][sequence[i+1]-1];
-	w += e[sequence[sequence.size()-1]-1][sequence[0]-1];
+	for (int i = 0; i < seq.size()-1; ++i)
+		w += v[seq[i]-1][seq[i+1]-1];
+	w += v[seq[seq.size()-1]-1][seq[0]-1];
 	return w;
 }
 
