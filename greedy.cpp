@@ -1,32 +1,22 @@
-#define FOR(i,a,b) for(int i=a; i<b; ++i)
-#define ROF(i,a,b) for(int i=a; i>b; --i)
-#define REP(i,n) FOR(i,0,n)
 #define INF 2147483647
-#define MAX 1000
 #include"useful.cpp"
 // #include "tqdm/tqdm.h"
 using namespace std;
 
-vector<vector<double>> e;
-vector<bool> vis;
-
 int main(int argc, char * argv[]){
 	std::ios_base::sync_with_stdio(false);
-	vector<int> converter;
+	vector<vector<double>> e;
+	vector<bool> vis;
 	vector<int> sequence;
-	vector<int> v;
-	double mini;
-	int a, b;
-	readInputFile(argv[1], e, converter);
+	double mini = INF;
+	int a = 0, b;
+	readInputFile(argv[1], e);
 	vis.resize(e.size(), 0);
-	//zaczynam algorytm
-	vis[0] = 1;
-	a = 0;
-	sequence.push_back(1);
-	mini = INF;
+	sequence.push_back(1); vis[0] = 1;	//dodajemy pierwszy wierzcholek
+	//************* algorytm zachlanny: 
 	for (int i = 1; i < e.size(); ++i){
 		for (int j = 0; j < e.size(); ++j){
-			if(!vis[j] and (e[a][j]) < mini) 
+			if(!vis[j] and e[a][j] < mini) 
 				b = j, mini = e[a][j];
 		}
 			sequence.push_back(b+1);
@@ -34,6 +24,7 @@ int main(int argc, char * argv[]){
 			a = b;
 			mini = INF;
 	}
+	//************* wypisywanie wyniku:
 	cout<<"wynik: "<<result(e, sequence)<<endl;
 	if(argc > 2){
 		vector<int> optimalSequence = readSolutionFile(argv[2]);
