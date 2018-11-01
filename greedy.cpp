@@ -32,7 +32,5 @@ int main(int argc, char * argv[]){
 		double cost = (result(e, sequence) / result(e, optimalSequence)) - 1;
 		cout<<"cost: "<<setprecision(4)<<cost*100<<"%"<<endl;
 	}
-	else
-		cout<<"no optimal solution file found"<<endl;
 	return 0;
 }
