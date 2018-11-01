@@ -2,3 +2,4 @@
 *.exe
 in.txt
 **/*.DS_Store
+optilio.cpp
