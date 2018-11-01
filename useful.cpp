@@ -28,17 +28,17 @@ vector<int> readSolutionFile(string path){
 	fstream in; in.open(path);
 	vector<int> v;
 	int a;
-	while (in>>a) v.push_back(a);
+	while (in>>a) v.push_back(a-1);
 	in.close();
 	return v;
 }
 
-//wkladamy od 1, ale od indeksu 0
+//indeksujemy od 0
 double result(vector<vector<double>> & v, vector<int> & seq){
 	double w = 0;
 	for (int i = 0; i < seq.size()-1; ++i)
-		w += v[seq[i]-1][seq[i+1]-1];
-	w += v[seq[seq.size()-1]-1][seq[0]-1];	//dodajemy powrot do poczatku
+		w += v[seq[i]][seq[i+1]];
+	w += v[seq[seq.size()-1]][seq[0]];	//dodajemy powrot do poczatku
 	return w;
 }
 
