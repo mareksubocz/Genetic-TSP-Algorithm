@@ -19,7 +19,7 @@ void readInputFile(string path, vector<vector<double>> & v){
 	v.resize(p.size(),vector<double>(p.size(), 0));
 	// wyliczenie odległości:
 	for (int i = 0; i < p.size(); ++i)
-		for (int j = i; j < p.size(); ++j)
+		for (int j = i+1; j < p.size(); ++j)
 			v[i][j]=v[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
 	in.close();
 }
@@ -34,11 +34,11 @@ vector<int> readSolutionFile(string path){
 }
 
 //indeksujemy od 0
-double result(vector<vector<double>> & v, vector<int> & seq){
-	double w = 0;
+double result(vector<vector<double>> & e, vector<int> & seq){
+	double res = 0;
 	for (int i = 0; i < seq.size()-1; ++i)
-		w += v[seq[i]][seq[i+1]];
-	w += v[seq[seq.size()-1]][seq[0]];	//dodajemy powrot do poczatku
-	return w;
+		res += e[seq[i]][seq[i+1]];
+	res += e[seq[seq.size()-1]][seq[0]];	//dodajemy powrot do poczatku
+	return res;
 }
 
