@@ -14,6 +14,7 @@ void readInputFile(string path, vector<vector<double>> & v){
 	int no;
 	double a, b;
 	vector<point> p;
+	in>>no;
 	while(in>>no>>a>>b)
 		p.push_back(point{a,b});
 	v.resize(p.size(),vector<double>(p.size(), 0));
