@@ -3,9 +3,9 @@
 using namespace std;
 
 int numOfEpochs = 400;
-int generationSize = 2000;
-int tournamentSize = 50;
-double mutationRate = 0.006;
+int generationSize = 1000;
+int tournamentSize = 40;
+double mutationRate = 0.007;
 bool elitism = true;
 vector<int> theBestEver;
 vector<double> fitness;
@@ -19,6 +19,7 @@ void startGeneration() {
     random_shuffle(chromosome.begin(), chromosome.end());
     generation.push_back(chromosome);
   }
+  theBestEver = generation[0];
 }
 
 void calcFitness() {
@@ -93,8 +94,10 @@ void nextGeneration() {
   vector<vector<int>> newGeneration;
   if (elitism) newGeneration.push_back(theBestEver);
   while (newGeneration.size() < generationSize) {
-    vector<int> a = tournament();
-    vector<int> b = tournament();
+    // vector<int> a = tournament();
+    // vector<int> b = tournament();
+    vector<int> a = pickOne();
+    vector<int> b = pickOne();
     vector<int> ab = crossover(a, b);
     mutate(ab);
     newGeneration.push_back(ab);
@@ -107,11 +110,9 @@ int main(int argc, char const *argv[]) {
   srand(int(time(NULL))); rand();
   readInputFile(argv[1], e);
   startGeneration();
-  theBestEver = generation[0];
   for (int epoch = 0; epoch < numOfEpochs; ++epoch) {
     calcFitness();
-    cout << "epoch " << epoch << ", best ever: " << result(e, theBestEver)
-         << endl;
+    cout << epoch << "-> best ever: " << result(e, theBestEver) << endl;
     nextGeneration();
   }
   return 0;
