@@ -1,5 +1,5 @@
 #include<bits/stdc++.h>
-
+#define INF INT_MAX
 using namespace std;
 
 
@@ -43,3 +43,22 @@ double result(vector<vector<double>> & e, vector<int> & seq){
 	return res;
 }
 
+vector<int> greedy(vector<vector<double>>& e, int start) {
+  vector<bool> vis;
+  vector<int> sequence;
+  double mini = INF;
+  int a = start, b;
+  vis.resize(e.size(), 0);
+  sequence.push_back(start);
+  vis[start] = true;
+  for (int i = 0; i < e.size()-1; ++i) {
+    for (int j = 0; j < e.size(); ++j)
+      if (!vis[j] and e[a][j] < mini) 
+      	b = j, mini = e[a][j];
+    sequence.push_back(b);
+    vis[b] = true;
+    a = b;
+    mini = INF;
+  }
+  return sequence;
+}

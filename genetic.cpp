@@ -1,21 +1,48 @@
-#define INF 2147483647
 #include "useful.cpp"
 using namespace std;
 
-int numOfEpochs = 400;
-int generationSize = 1000;
-int tournamentSize = 40;
-double mutationRate = 0.007;
-bool elitism = true;
+static int numOfEpochs = 1000;
+static int generationSize = 3000;
+static int tournamentSize = 2;
+static double mutationRate = 0.007;
+static bool elitism = true;
+
 vector<int> theBestEver;
 vector<double> fitness;
+vector<double> difference;
 vector<vector<double>> e;
 vector<vector<int>> generation;
 
-void startGeneration() {
+void startrandomGeneration() {
   vector<int> chromosome;
   for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
   for (int i = 0; i < generationSize; ++i) {
+    random_shuffle(chromosome.begin(), chromosome.end());
+    generation.push_back(chromosome);
+  }
+  theBestEver = generation[0];
+}
+
+void mutate(vector<int> &v) {
+  for (int i = 0; i < e.size(); ++i)
+    if (rand() / (double)RAND_MAX < mutationRate) {
+      int a = rand() % (int)e.size();
+      swap(v[i], v[a]);
+    }
+}
+
+void startGreedyGeneration(){
+  vector<int> seq;
+  for (int i = 0; i < e.size(); ++i)
+    generation.push_back(greedy(e, i));
+  // for(int i = 0; generation.size() < generationSize; ++i, i %= (int)e.size()){
+  //   seq = generation[i];
+  //   mutate(seq);
+  //   generation.push_back(seq);
+  // }
+  vector<int> chromosome;
+  for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
+  for (int i = 0; generation.size() < generationSize; ++i) {
     random_shuffle(chromosome.begin(), chromosome.end());
     generation.push_back(chromosome);
   }
@@ -32,6 +59,23 @@ void calcFitness() {
     if (res < bestResult) {
     	theBestEver = generation[i];
     	bestResult = result(e, theBestEver);
+    }
+  }
+}
+
+void calcDifference(vector<vector<int>> chosen) {
+  for (int i = 0; i < difference.size(); ++i)
+    difference[i] = 0;
+  vector<vector<int>> c(e.size());
+  for (int i = 0; i < chosen.size(); ++i)
+    for (int j = 0; j < e.size(); ++j)
+      c[i][chosen[i][j]] = chosen[i][(j+1) % e.size()];
+  for (int gi = 0; gi < generation.size(); ++gi){
+    for (int ci = 0; ci < chosen.size(); ++ci){
+      for (int i = 0; i < e.size(); ++i){
+        if(c[ci][generation[gi][i]] != generation[gi][i+1])
+          difference[gi]++;
+      }
     }
   }
 }
@@ -69,6 +113,12 @@ vector<int> tournament() {
   return generation[winner];
 }
 
+vector<int> rankBased(){
+  vector<int> sequence;
+  sort(generation.begin(), generation.end());
+  return sequence;
+}
+
 vector<int> crossover(vector<int> &a, vector<int> &b) {
   vector<int> newChromosome;
   int start = rand() % (int)e.size();
@@ -82,22 +132,13 @@ vector<int> crossover(vector<int> &a, vector<int> &b) {
   return newChromosome;
 }
 
-void mutate(vector<int> &v) {
-  for (int i = 0; i < e.size(); ++i)
-    if (rand() / (double)RAND_MAX < mutationRate) {
-      int a = rand() % (int)e.size();
-      swap(v[i], v[a]);
-    }
-}
-
 void nextGeneration() {
   vector<vector<int>> newGeneration;
   if (elitism) newGeneration.push_back(theBestEver);
   while (newGeneration.size() < generationSize) {
-    // vector<int> a = tournament();
-    // vector<int> b = tournament();
-    vector<int> a = pickOne();
-    vector<int> b = pickOne();
+    vector<int> a = tournament(); vector<int> b = tournament();
+    // vector<int> a = pickOne(); vector<int> b = pickOne();
+    // vector<int> a = rankBased(); vector<int> b = rankBased();
     vector<int> ab = crossover(a, b);
     mutate(ab);
     newGeneration.push_back(ab);
@@ -105,15 +146,30 @@ void nextGeneration() {
   generation = newGeneration;
 }
 
+void sigint(int a) {
+  cout<<"najlepszy: "<<endl;
+  for (int i = 0; i < theBestEver.size(); ++i)
+    cout<<theBestEver[i] + 1<<" ";
+  exit(0);
+}
+
 int main(int argc, char const *argv[]) {
-  std::ios_base::sync_with_stdio(false);
+  // std::ios_base::sync_with_stdio(false);
+  // std::cin.tie(nullptr);
+  signal(SIGINT, sigint);
   srand(int(time(NULL))); rand();
   readInputFile(argv[1], e);
-  startGeneration();
+  difference.resize(generationSize);
+  // startrandomGeneration();
+  startGreedyGeneration();
   for (int epoch = 0; epoch < numOfEpochs; ++epoch) {
     calcFitness();
     cout << epoch << "-> best ever: " << result(e, theBestEver) << endl;
     nextGeneration();
   }
+
+  cout<<"najlepszy: "<<endl;
+  for (int i = 0; i < theBestEver.size(); ++i)
+    cout<<theBestEver[i]<<", ";
   return 0;
 }
