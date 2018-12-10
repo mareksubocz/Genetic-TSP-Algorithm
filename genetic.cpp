@@ -2,15 +2,16 @@
 using namespace std;
 
 static int numOfEpochs = 1000;
-static int generationSize = 3000;
-static int tournamentSize = 2;
-static double mutationRate = 0.007;
-static bool elitism = true;
+static int generationSize = 1000;
+static int tournamentSize = 5;
+static double mutationRate = 0.01;
+static bool elitism = 1;
 
 vector<int> theBestEver;
 vector<double> fitness;
 vector<vector<double>> e;
 vector<vector<int>> generation;
+map<double,vector<int>> sortedByFitness;
 
 void startrandomGeneration() {
   vector<int> chromosome;
@@ -34,11 +35,6 @@ void startGreedyGeneration(){
   vector<int> seq;
   for (int i = 0; i < e.size(); ++i)
     generation.push_back(greedy(e, i));
-  // for(int i = 0; generation.size() < generationSize; ++i, i %= (int)e.size()){
-  //   seq = generation[i];
-  //   mutate(seq);
-  //   generation.push_back(seq);
-  // }
   vector<int> chromosome;
   for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
   for (int i = 0; generation.size() < generationSize; ++i) {
@@ -95,9 +91,12 @@ vector<int> tournament() {
   return generation[winner];
 }
 
-vector<int> rankBased(){
+vector<int> rankBased() {
   vector<int> sequence;
-  sort(generation.begin(), generation.end());
+  for (int i = 0; i < generation.size(); ++i) {
+    sortedByFitness.insert(
+        pair<double, vector<int>>(fitness[i], generation[i]));
+  }
   return sequence;
 }
 
@@ -132,12 +131,18 @@ void sigint(int a) {
   cout<<"najlepszy: "<<endl;
   for (int i = 0; i < theBestEver.size(); ++i)
     cout<<theBestEver[i] + 1<<" ";
+  cout<<endl;
+  cout<<"NoE: "<<numOfEpochs<<endl;
+  cout<<"genSize: "<<generationSize<<endl;
+  cout<<"tourSize: "<<tournamentSize<<endl;
+  cout<<"mutRate: "<<mutationRate<<endl;
+  cout<<"elitism: "<<elitism<<endl;
   exit(0);
 }
 
 int main(int argc, char const *argv[]) {
-  // std::ios_base::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
+  std::ios_base::sync_with_stdio(false);
+  std::cin.tie(nullptr);
   signal(SIGINT, sigint);
   srand(int(time(NULL))); rand();
   readInputFile(argv[1], e);
