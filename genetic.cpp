@@ -9,7 +9,6 @@ static bool elitism = true;
 
 vector<int> theBestEver;
 vector<double> fitness;
-vector<double> difference;
 vector<vector<double>> e;
 vector<vector<int>> generation;
 
@@ -51,31 +50,14 @@ void startGreedyGeneration(){
 
 void calcFitness() {
   double res;
-	double bestResult = result(e, theBestEver);
+  double bestResult = result(e, theBestEver);
   for (int i = 0; i < generation.size(); ++i) {
     res = result(e, generation[i]);
     fitness.resize(generationSize);
     fitness[i] = 1 / (res + 1);
     if (res < bestResult) {
-    	theBestEver = generation[i];
-    	bestResult = result(e, theBestEver);
-    }
-  }
-}
-
-void calcDifference(vector<vector<int>> chosen) {
-  for (int i = 0; i < difference.size(); ++i)
-    difference[i] = 0;
-  vector<vector<int>> c(e.size());
-  for (int i = 0; i < chosen.size(); ++i)
-    for (int j = 0; j < e.size(); ++j)
-      c[i][chosen[i][j]] = chosen[i][(j+1) % e.size()];
-  for (int gi = 0; gi < generation.size(); ++gi){
-    for (int ci = 0; ci < chosen.size(); ++ci){
-      for (int i = 0; i < e.size(); ++i){
-        if(c[ci][generation[gi][i]] != generation[gi][i+1])
-          difference[gi]++;
-      }
+      theBestEver = generation[i];
+      bestResult = result(e, theBestEver);
     }
   }
 }
@@ -159,7 +141,7 @@ int main(int argc, char const *argv[]) {
   signal(SIGINT, sigint);
   srand(int(time(NULL))); rand();
   readInputFile(argv[1], e);
-  difference.resize(generationSize);
+  theBestEver.resize(e.size());
   // startrandomGeneration();
   startGreedyGeneration();
   for (int epoch = 0; epoch < numOfEpochs; ++epoch) {
