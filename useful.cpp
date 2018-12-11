@@ -8,13 +8,15 @@ struct point{
 	double y;
 };
 
-void readInputFile(string path, vector<vector<double>> & v){
+int readInputFile(string path, vector<vector<double>> & v){
 	fstream in;
 	in.open(path);
-	int no;
+	if(!in.good())
+		cout<<"Nie udalo sie otworzyc pliku."<<endl;
+	int instanceSize, no;
 	double a, b;
 	vector<point> p;
-	in>>no;
+	in>>instanceSize;
 	while(in>>no>>a>>b)
 		p.push_back(point{a,b});
 	v.resize(p.size(),vector<double>(p.size(), 0));
@@ -23,6 +25,7 @@ void readInputFile(string path, vector<vector<double>> & v){
 		for (int j = i+1; j < p.size(); ++j)
 			v[i][j]=v[j][i]=(sqrt(pow(p[i].x - p[j].x,2) + pow(p[i].y - p[j].y,2)));
 	in.close();
+	return instanceSize;
 }
 
 vector<int> readSolutionFile(string path){
