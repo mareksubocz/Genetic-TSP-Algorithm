@@ -2,11 +2,14 @@
 #define pdvi pair<double, vector<int> >
 using namespace std;
 
-int numOfEpochs = 1000;
-int generationSize = 1000;
-int tournamentSize = 40;
-double mutationRate = 0.01;
+enum selectionType{tourSel, rankSel};
+
+int numOfEpochs = 10000;
+int generationSize = 30;
+int tournamentSize = 2;
+double mutationRate = 0.005;
 bool elitism = 1;
+selectionType st = tourSel;
 
 int instanceSize;
 vector<vector<double>> e;
@@ -26,6 +29,19 @@ void mutate(vector<int> &v) {
     if (rand() / (double)RAND_MAX < mutationRate) {
       int a = rand() % (int)e.size();
       swap(v[i], v[a]);
+    }
+}
+
+void greedyMutate(vector<int> &v) {
+  vector<int> v2;
+  for (int i = 0; i < e.size(); ++i)
+    if (rand() / (double)RAND_MAX < mutationRate) {
+      do{
+        int a = rand() % (int)e.size();
+        v2 = v;
+        swap(v2[i], v2[a]);
+      }while(result(e,v2) < result(e,v));
+      v = v2;
     }
 }
 
@@ -92,13 +108,15 @@ vector<int> crossover(vector<int> &a, vector<int> &b) {
 }
 
 void nextGeneration() {
-  multimap<double, vector<int> > newGeneration;
+  multimap<double, vector<int>> newGeneration;
+  vector<int> a, b, ab;
   if (elitism) newGeneration.insert(*generation.begin());
   while (newGeneration.size() < generationSize) {
-    vector<int> a = tournament(); vector<int> b = tournament();
-    // vector<int> a = pickOne(); vector<int> b = pickOne();
-    // vector<int> a = rankBased(); vector<int> b = rankBased();
-    vector<int> ab = crossover(a, b);
+    if (st == tourSel)
+      a = tournament(), b = tournament();
+    else if (st == rankSel)
+      a = rankBased(), b = rankBased();
+    ab = crossover(a, b);
     mutate(ab);
     newGeneration.emplace(result(e, ab), ab);
   }
@@ -115,6 +133,7 @@ void sigint(int a) {
   cout<<"tourSize: "<<tournamentSize<<endl;
   cout<<"mutRate: "<<mutationRate<<endl;
   cout<<"elitism: "<<elitism<<endl;
+  cout<<"selType: "<<st<<endl;
   exit(0);
 }
 
@@ -130,9 +149,7 @@ int main(int argc, char const *argv[]) {
     cout << epoch << "-> best ever: " << result(e, generation.begin()->second) << endl;
     nextGeneration();
   }
-
-  cout<<"najlepszy: "<<endl;
-  for (int i = 0; i < instanceSize; ++i)
-    cout<<generation.begin()->second[i] + 1<<" ";
+  sigint(0);
+  
   return 0;
 }
