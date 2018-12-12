@@ -2,9 +2,9 @@
 #define pdvi pair<double, vector<int> >
 using namespace std;
 
-int numOfEpochs = 100;
+int numOfEpochs = 1000;
 int generationSize = 1000;
-int tournamentSize = 2;
+int tournamentSize = 40;
 double mutationRate = 0.01;
 bool elitism = 1;
 
@@ -15,7 +15,7 @@ multimap<double,vector<int>> generation;
 void startrandomGeneration() {
   vector<int> chromosome;
   for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
-  for (int i = 0; i < generationSize; ++i) {
+  while (generation.size() < generationSize) {
     random_shuffle(chromosome.begin(), chromosome.end());
     generation.emplace(result(e, chromosome), chromosome);
   }
@@ -37,31 +37,12 @@ void startGreedyGeneration(){
   }
   vector<int> chromosome;
   for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
-  for (int i = 0; generation.size() < generationSize; ++i) {
+  while (generation.size() < generationSize) {
     random_shuffle(chromosome.begin(), chromosome.end());
     generation.emplace(result(e,chromosome),chromosome);
   }
 }
 
-/*void calcFitness() {
-  double res;
-  double bestResult = result(e, theBestEver);
-  for (int i = 0; i < generation.size(); ++i) {
-    res = result(e, generation[i]);
-    fitness.resize(generationSize);
-    fitness[i] = 1 / (res + 1);
-    if (res < bestResult) {
-      theBestEver = generation[i];
-      bestResult = result(e, theBestEver);
-    }
-  }
-}*/
-
-/*void normalizeFitness() {
-  double sum = 0;
-  for (int i = 0; i < fitness.size(); ++i) sum += fitness[i];
-  for (int i = 0; i < fitness.size(); ++i) fitness[i] /= sum;
-}*/
 
 /*vector<int> pickOne() {
   int index;
@@ -83,9 +64,19 @@ vector<int> tournament() {
   return minitem->second;
 }
 
-/*vector<int> rankBased() {
-  return sequence;
-}*/
+vector<int> rankBased() {
+  double base = 1 / (((generationSize+1) * generationSize) / 2);
+  double r = rand() / (double)RAND_MAX;
+  for (int i = 0; i < generationSize; ++i){
+    r -= base * (generationSize-i);
+    if(r <= 0){
+      auto ptr = generation.begin();
+      advance(ptr,i);
+      return ptr->second;
+    }
+  }
+  return generation.begin()->second;
+}
 
 vector<int> crossover(vector<int> &a, vector<int> &b) {
   vector<int> newChromosome;
@@ -110,7 +101,6 @@ void nextGeneration() {
     vector<int> ab = crossover(a, b);
     mutate(ab);
     newGeneration.emplace(result(e, ab), ab);
-    cout<<newGeneration.size()<<endl;
   }
   generation = newGeneration;
 }

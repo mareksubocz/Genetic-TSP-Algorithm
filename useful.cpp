@@ -11,8 +11,10 @@ struct point{
 int readInputFile(string path, vector<vector<double>> & v){
 	fstream in;
 	in.open(path);
-	if(!in.good())
+	if(!in.good()){
 		cout<<"Nie udalo sie otworzyc pliku."<<endl;
+		exit(1);
+	}
 	int instanceSize, no;
 	double a, b;
 	vector<point> p;
