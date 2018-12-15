@@ -2,16 +2,20 @@
 #define pdvi pair<double, vector<int> >
 using namespace std;
 
-enum selectionType{tourSel, rankSel};
+enum selectionType{tourSel, rankSel, propSel};
+enum mutationType{swapMut, revMut};
 
-int numOfEpochs = 10000;
-int generationSize = 30;
+int numOfEpochs = 1000;
+int generationSize = 2000;
 int tournamentSize = 2;
-double mutationRate = 0.005;
+double mutationRate = 0.5;
 bool elitism = 1;
-selectionType st = tourSel;
+selectionType st = rankSel;
+mutationType mt = swapMut;
 
 int instanceSize;
+vector<int> theBestEver;
+double theBestResult;
 vector<vector<double>> e;
 multimap<double,vector<int>> generation;
 
@@ -24,25 +28,23 @@ void startrandomGeneration() {
   }
 }
 
-void mutate(vector<int> &v) {
-  for (int i = 0; i < e.size(); ++i)
+void swapMutate(vector<int> &v) {
+  for (int i = 0; i < v.size(); ++i)
     if (rand() / (double)RAND_MAX < mutationRate) {
-      int a = rand() % (int)e.size();
+      int a = rand() % (int)v.size();
       swap(v[i], v[a]);
     }
 }
 
-void greedyMutate(vector<int> &v) {
-  vector<int> v2;
-  for (int i = 0; i < e.size(); ++i)
-    if (rand() / (double)RAND_MAX < mutationRate) {
-      do{
-        int a = rand() % (int)e.size();
-        v2 = v;
-        swap(v2[i], v2[a]);
-      }while(result(e,v2) < result(e,v));
-      v = v2;
+void reverseMutate(vector<int> &v) {
+  if (rand() / (double)RAND_MAX < mutationRate) {
+    int a = rand() % (int)v.size();
+    int b = rand() % (int)v.size();
+    if(a > b) swap(a, b);
+    for (int i = 0; i <= (b-a)/2; ++i){
+      swap(v[a+i], v[b-i]);
     }
+  }
 }
 
 void startGreedyGeneration(){
@@ -59,14 +61,23 @@ void startGreedyGeneration(){
   }
 }
 
+double sumOfFitnesses(){
+  double sum = 0;
+  auto ptr = generation.begin();
+  for (; ptr != generation.end(); ++ptr){
+    sum += ptr->first;
+  }
+  return sum;
+}
 
-/*vector<int> pickOne() {
-  int index;
+vector<int> proportional() {
+  double sum;
   double r = rand() / RAND_MAX;
-  // normalizeFitness();
-  for (index = 0; r > 0; ++index) r -= fitness[index];
-  return generation[index];
-}*/
+  sum = sumOfFitnesses();
+  auto ptr = generation.begin();
+  for (; r > 0; ++ptr) r -= ptr->first / sum;
+  return ptr->second;
+}
 
 vector<int> tournament() {
   auto item = generation.begin();
@@ -116,24 +127,38 @@ void nextGeneration() {
       a = tournament(), b = tournament();
     else if (st == rankSel)
       a = rankBased(), b = rankBased();
+    else if (st == propSel)
+      a = proportional(), b = proportional();
+
     ab = crossover(a, b);
-    mutate(ab);
+
+    if (mt == swapMut)
+      swapMutate(ab);
+    else if(mt == revMut)
+      reverseMutate(ab);
     newGeneration.emplace(result(e, ab), ab);
   }
   generation = newGeneration;
+  if(generation.begin()->first < theBestResult){
+    theBestResult = generation.begin()->first;
+    theBestEver = generation.begin()->second;
+  }
+
 }
 
 void sigint(int a) {
   cout<<"najlepszy: "<<endl;
   for (int i = 0; i < instanceSize; ++i)
-    cout<<generation.begin()->second[i] + 1<<" ";
+    cout<<theBestEver[i] + 1<<" ";
   cout<<endl;
+  cout<<"best ever: "<<theBestResult<<endl;
   cout<<"NoE: "<<numOfEpochs<<endl;
   cout<<"genSize: "<<generationSize<<endl;
   cout<<"tourSize: "<<tournamentSize<<endl;
   cout<<"mutRate: "<<mutationRate<<endl;
   cout<<"elitism: "<<elitism<<endl;
   cout<<"selType: "<<st<<endl;
+  cout<<"mutType: "<<mt<<endl;
   exit(0);
 }
 
@@ -145,8 +170,10 @@ int main(int argc, char const *argv[]) {
   instanceSize = readInputFile(argv[1], e);
   // startrandomGeneration();
   startGreedyGeneration();
+  theBestEver = generation.begin()->second;
+  theBestResult = generation.begin()->first;
   for (int epoch = 0; epoch < numOfEpochs; ++epoch) {
-    cout << epoch << "-> best ever: " << result(e, generation.begin()->second) << endl;
+    cout << epoch << "-> best in generation: " << result(e, generation.begin()->second) << endl;
     nextGeneration();
   }
   sigint(0);
