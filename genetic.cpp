@@ -6,10 +6,10 @@ enum selectionType{tourSel, rankSel, propSel};
 enum mutationType{swapMut, revMut};
 
 int numOfEpochs = 1000;
-int generationSize = 5000;
+int generationSize = 1000;
 int tournamentSize = 2;
-double mutationRate = 0.001;
-bool elitism = 1;
+double mutationRate = 0.007;
+bool elitism = 0;
 selectionType st = tourSel;
 mutationType mt = swapMut;
 
@@ -25,6 +25,20 @@ void startrandomGeneration() {
   while (generation.size() < generationSize) {
     random_shuffle(chromosome.begin(), chromosome.end());
     generation.emplace(result(e, chromosome), chromosome);
+  }
+}
+
+void startGreedyGeneration(){
+  vector<int> seq;
+  for (int i = 0; i < e.size(); ++i){
+    seq = greedy(e, i);
+    generation.emplace(result(e, seq), seq);
+  }
+  vector<int> chromosome;
+  for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
+  while (generation.size() < generationSize) {
+    random_shuffle(chromosome.begin(), chromosome.end());
+    generation.emplace(result(e,chromosome),chromosome);
   }
 }
 
@@ -44,20 +58,6 @@ void reverseMutate(vector<int> &v) {
     for (int i = 0; i <= (b-a)/2; ++i){
       swap(v[a+i], v[b-i]);
     }
-  }
-}
-
-void startGreedyGeneration(){
-  vector<int> seq;
-  for (int i = 0; i < e.size(); ++i){
-    seq = greedy(e, i);
-    generation.emplace(result(e, seq), seq);
-  }
-  vector<int> chromosome;
-  for (int j = 0; j < e.size(); ++j) chromosome.push_back(j);
-  while (generation.size() < generationSize) {
-    random_shuffle(chromosome.begin(), chromosome.end());
-    generation.emplace(result(e,chromosome),chromosome);
   }
 }
 
@@ -147,20 +147,34 @@ void nextGeneration() {
 }
 
 void partialBrute(){
-  int n = 9; //maksymalnie 11 ma jakis sens
-  int step = 1; // TODO: naprawic
+  int n = 10; //maksymalnie 11 ma jakis sens
+  int step = 4; // TODO: naprawic
   int count = 1000;
+  float progress = 0.0;
+  int barWidth = 70;
   vector<int> tmpvec;
-  for (int i = 0; i < n; ++i) tmpvec.push_back(theBestEver[i]);
-  for (int i = 0; i < count; i+=step){
-    if(i%5 == 0)
-      cout<<(double)i/count * 100<<"%"<<endl;
+  for (int i = 0; i < count; i++){
+    if(i%5 == 0){
+    progress = (float)i/(float)count;
+    cout << "[";
+    int pos = int((float)barWidth * progress);
+    for (int i = 0; i < barWidth; ++i) {
+        if (i < pos) cout << "=";
+        else if (i == pos) cout << ">";
+        else cout << " ";
+    }
+    cout << "] " << int(progress * 100.0) << " %\r";
+    cout.flush();
+  }
+    for (int j = 0; j < n; ++j)
+      tmpvec.push_back(theBestEver[(i*step + j) % instanceSize]);
     bruteforce(e, tmpvec);
-    for (int j = 0; j < n; ++j) theBestEver[(j+i) % instanceSize] = tmpvec[j];
-    tmpvec.erase(tmpvec.begin());
-    tmpvec.push_back(theBestEver[(i+n) % instanceSize]);
+    for (int j = 0; j < n; ++j)
+      theBestEver[(i*step + j) % instanceSize] = tmpvec[j];
+    tmpvec.clear();
   }
   theBestResult = result(e, theBestEver);
+  cout<<endl;
 }
 
 void sigint(int a) {
