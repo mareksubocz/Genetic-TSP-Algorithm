@@ -67,3 +67,14 @@ vector<int> greedy(vector<vector<double>>& e, int start) {
   }
   return sequence;
 }
+
+void bruteforce(vector<vector<double>> & e, vector<int> & seq){
+	double miniRes = result(e,seq) - e[seq[seq.size()-1]][seq[0]];
+	vector<int> seq2 = seq;
+	do{
+		if(result(e,seq2) - e[seq2[seq2.size()-1]][seq2[0]] < miniRes){
+			seq = seq2;
+			miniRes = result(e,seq) - e[seq[seq.size()-1]][seq[0]];
+		}
+	}while (next_permutation( seq2.begin()+1, seq2.end()-1 ));
+}

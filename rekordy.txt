@@ -6,16 +6,18 @@ int tournamentSize = 500;
 double mutationRate = 0.005;
 bool elitism = false;
 
-bier127:
+bier127: 121509
 
-tsp1000: 
+tsp1000: 28178
 
-tsp500: 
+tsp500: 94902.2
+int n = 10;
+int count = 1000;
 NoE: 1000
 genSize: 5000
 tourSize: 2
 mutRate: 0.001
 elitism: 1
 
-tsp250: 
+tsp250: 13053
 

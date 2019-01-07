@@ -6,11 +6,11 @@ enum selectionType{tourSel, rankSel, propSel};
 enum mutationType{swapMut, revMut};
 
 int numOfEpochs = 1000;
-int generationSize = 2000;
+int generationSize = 5000;
 int tournamentSize = 2;
-double mutationRate = 0.5;
+double mutationRate = 0.001;
 bool elitism = 1;
-selectionType st = rankSel;
+selectionType st = tourSel;
 mutationType mt = swapMut;
 
 int instanceSize;
@@ -146,7 +146,25 @@ void nextGeneration() {
 
 }
 
+void partialBrute(){
+  int n = 9; //maksymalnie 11 ma jakis sens
+  int step = 1; // TODO: naprawic
+  int count = 1000;
+  vector<int> tmpvec;
+  for (int i = 0; i < n; ++i) tmpvec.push_back(theBestEver[i]);
+  for (int i = 0; i < count; i+=step){
+    if(i%5 == 0)
+      cout<<(double)i/count * 100<<"%"<<endl;
+    bruteforce(e, tmpvec);
+    for (int j = 0; j < n; ++j) theBestEver[(j+i) % instanceSize] = tmpvec[j];
+    tmpvec.erase(tmpvec.begin());
+    tmpvec.push_back(theBestEver[(i+n) % instanceSize]);
+  }
+  theBestResult = result(e, theBestEver);
+}
+
 void sigint(int a) {
+  partialBrute();
   cout<<"najlepszy: "<<endl;
   for (int i = 0; i < instanceSize; ++i)
     cout<<theBestEver[i] + 1<<" ";
@@ -172,6 +190,7 @@ int main(int argc, char const *argv[]) {
   startGreedyGeneration();
   theBestEver = generation.begin()->second;
   theBestResult = generation.begin()->first;
+  cout<<theBestResult<<endl;
   for (int epoch = 0; epoch < numOfEpochs; ++epoch) {
     cout << epoch << "-> best in generation: " << result(e, generation.begin()->second) << endl;
     nextGeneration();
